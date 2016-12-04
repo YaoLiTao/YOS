@@ -64,8 +64,9 @@
 #define SELECTOR_DATA (2 << 3)  // kernel data+stack
 #define SELECTOR_GS   (3 << 3)  // kernel GS
 
-#define MASTER_8259A 0x21
-#define SLAVE_8259A  0xA1
+#define MASTER_8259A_MASK 0x21
+#define SLAVE_8259A_MASK  0xA1
+
 
 
 typedef struct

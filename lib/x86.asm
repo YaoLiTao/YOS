@@ -11,6 +11,7 @@ GLOBAL _lidt
 GLOBAL _putc
 GLOBAL _sti
 GLOBAL _cli
+GLOBAL _ud
 
 ;uchar in_byte(ushort port)
 _in_byte:
@@ -145,4 +146,8 @@ _sti:
 
 _cli:
 	cli
+	ret
+
+_ud:
+	ud2
 	ret

@@ -23,21 +23,17 @@ void set_8259A();
 void setIDT();
 void getMenInfo();
 void setPage();
+void openINT();//打开中断
+void dispMagic();
 
 
 void cmain(uint magic, uint addr){
-	setGDT(); //先设置新GDT, printf需要用到GS
-	cls(); //清屏
-	/*
-	if (magic != MULTIBOOT_BOOTLOADER_MAGIC)
-	{
-		printf("magic in error!");
-		return;
-	}else printf("it is in kernel ! magic is %x\n", magic);
-	
-	set_8259A();
-	setIDT();
-	*/
+	setGDT(); 	//先设置新GDT, printf需要用到GS
+	cls(); 		//清屏
+	set_8259A();//对8259A进行编程
+	setIDT();	//初始化IDT
+	openINT();	//开中断
+	_ud();
 }
 
 void setGDT(){
@@ -47,13 +43,13 @@ void setGDT(){
 	init_descriptor(&m_gdt[2], 0, 0x0FFFFF, DA_DRW|DA_LIMIT_4K|DA_32);	//ds es ss 存在的可读写数据段
 	init_descriptor(&m_gdt[3], BASE_ADDR_OF_GS, 0xFFFF, DA_DRW|DA_DPL3); //gs 基地址 0xB8000
 
-	GdtPtr p = {
+	GdtPtr gdt_p = {
 		.limit = (GDT_SIZE * DESC_SIZE - 1), 
 		.addr_low = (uint)m_gdt, 
 		.addr_high = (uint)m_gdt >> 16
 	};
 
-	_lgdt(&p);
+	_lgdt(&gdt_p);
 }
 
 //void _out_byte(ushort port, uchar data);
@@ -107,11 +103,19 @@ void setIDT(){
 	init_gate(&m_idt[32 + 14], SELECTOR_CODE, (uint)IRQ_14, 0, DA_386IGate);
 	init_gate(&m_idt[32 + 15], SELECTOR_CODE, (uint)IRQ_15, 0, DA_386IGate);
 
-	IdtPtr p = {
+	IdtPtr idt_p = {
 		.limit = (GATE_SIZE * IDT_SIZE - 1),
 		.addr_low = (uint)m_idt, 
 		.addr_high = (uint)m_idt >> 16
 	};
 
-	_lidt(&p);
+	_lidt(&idt_p);
 }
+
+
+void openINT(){
+	_out_byte(MASTER_8259A_MASK, 0xFD);//打开IRQ_1, 键盘中断
+	_out_byte(SLAVE_8259A_MASK, 0XFF);//关闭从8259A所有中断
+	_sti();
+}
+

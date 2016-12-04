@@ -51,7 +51,7 @@ void exception_handler(int vec_no, int err_code, int eip, int cs, int eflags){
 			    "#MC Machine Check",
 			    "#XF SIMD Floating-Point Exception"
 	};
-	printf("Exception no:%x  err_msg[vec_no]\nEFLAGS:%x  CS:%x  EIP:%x  Error code:%x\n", vec_no, eflags, cs, eip, err_code);
+	printf("Exception no:%x  MSG:%s\nEFLAGS:%x  CS:%x  EIP:%x  Error code:%x\n", vec_no, err_msg[vec_no], eflags, cs, eip, err_code);
 }
 
 void disp_IRQ(int irq){

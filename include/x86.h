@@ -21,5 +21,6 @@ void _lidt(IdtPtr *p);
 void _putc(int pos, int char_and_attr);
 void _sti();
 void _cli();
+void _ud();
 
 #endif
