@@ -2,10 +2,8 @@
 #define _YOS_STRING_ 1
 
 #include <x86.h>
+#include <string.h>
 
-#define COLUMNS                 80
-#define LINES                   24
-#define ATTRIBUTE               7
 #define pos(x, y) ((x + y * COLUMNS) * 2)
 #define char_attr(c, a) ((a << 8) | (c & 0xff))
 

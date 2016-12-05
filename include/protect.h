@@ -67,6 +67,8 @@
 #define MASTER_8259A_MASK 0x21
 #define SLAVE_8259A_MASK  0xA1
 
+#define CHECK(flags, bit) (flags & bit)
+
 
 
 typedef struct
@@ -100,6 +102,16 @@ typedef struct
 	uchar	attr;		/* P(1) DPL(2) DT(1) TYPE(4) */
 	ushort	offset_high;	/* Offset High */
 }Gate;
+
+//地址范围描述结构 ARDS
+typedef struct 			
+{
+	uint BaseAddrLow;	//基地址的低32位
+	uint BaseAddrHigh;	//基地址的高32位
+	uint LengthLow;		//长度(字节)的低32位
+	uint LengthHigh;	//长度(字节)的高32位
+	uint Type;			//这个地址范围的地址类型 1: 可以被OS使用 2或其他:不要使用
+}ARDS;
 
 //init_descriptor(描述符地址, 段基址, 段限界, 属性)
 void init_descriptor(Descriptor *desc, uint base, uint limit, ushort attribute);

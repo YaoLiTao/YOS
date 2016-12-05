@@ -69,8 +69,13 @@
 /* Is there video information? */
 #define MULTIBOOT_INFO_VIDEO_INFO               0x00000800
 
+
 #ifndef ASM_FILE
 
+typedef unsigned long long multiboot_uint64_t;
+typedef unsigned int multiboot_uint32_t;
+typedef unsigned short multiboot_uint16_t;
+typedef unsigned char multiboot_uint8_t;
 
 struct multiboot_header
 {
