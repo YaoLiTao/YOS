@@ -70,7 +70,6 @@
 #define CHECK(flags, bit) (flags & bit)
 
 
-
 typedef struct
 {
 	ushort	limit_low;		/* Limit */

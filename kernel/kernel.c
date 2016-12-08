@@ -6,6 +6,7 @@
 #include <protect.h>
 #include <string.h>
 #include <interrupt.h>
+#include <memlayout.h>
 #include <multiboot.h>
 
 #define GDT_SIZE  4
@@ -13,6 +14,8 @@
 #define DESC_SIZE 8
 #define GATE_SIZE 8
 #define ARDS_SIZE 12
+#define SIZE_4M	  0x400000
+#define SIZE_4K   0x1000
 
 #endif
 
@@ -20,7 +23,8 @@ Descriptor m_gdt[GDT_SIZE];						//GDT
 Gate m_idt[IDT_SIZE];							//IDT
 multiboot_info_t *MBI_ptr;						//multiboot_info 指针
 uint szMemory;									//总内存
-ARDS ards[ARDS_SIZE];							//假设只有12个ARDS
+volatile uint *PageDirAddr = PageDirBase;				
+volatile uint *PageTblAddr = PageTblBase;
 
 void HandleMBI(uint addr);	
 void setGDT();
@@ -29,17 +33,17 @@ void set_8259A();
 void setIDT();
 void openINT();
 
-
+//调用顺序不可变
 void cmain(uint magic, uint addr){
 	if (magic != MULTIBOOT_BOOTLOADER_MAGIC)
 		return;
 	setGDT(); 			//先设置新GDT, printf需要用到GS
 	cls();				//清屏
-	HandleMBI(addr);	//将 MBI_ptr 指向 multiboot_info
+	HandleMBI(addr);	//将 MBI_ptr 指向 multiboot_info 获取内存信息
 	setPage();			//分页
 	set_8259A();		//对8259A进行编程
 	setIDT();			//初始化IDT
-	//openINT();		//开中断
+	openINT();		    //开中断
 	_ud();
 }
 
@@ -50,8 +54,8 @@ void HandleMBI(uint addr){
 	{
 		printf("mem_lower:%xB\n", MBI_ptr->mem_lower * 0x400);
 		printf("mem_upper:%xB\n", MBI_ptr->mem_upper * 0x400);
-		szMemory = 0x400 + MBI_ptr->mem_upper; //1M + 高地址
-		printf("szMemory:%xB\n", szMemory * 0x400);
+		szMemory = (0x400 + MBI_ptr->mem_upper) * 0x400; //1M + 高地址
+		printf("szMemory:%xB\n", szMemory);
 	}
 	/*
 	if (CHECK(MBI_ptr->flags, MULTIBOOT_INFO_ELF_SHDR))
@@ -95,7 +99,29 @@ void setGDT(){
 
 
 void setPage(){
+	int szPageDir, rtPTE, rtMem, rt, i;
+	szPageDir = szMemory / SIZE_4M;
+	rtMem = szMemory % SIZE_4M;
+	rtPTE = rtMem / SIZE_4K;
+	if(rtMem != 0)
+		rt = 1;
+	else rt = 0;
 
+	for (i = 0; i < szPageDir + rt; i++)
+		*(PageDirAddr + i) = (PageTblBase + i * SIZE_4K)|PG_P|PG_USU|PG_RWW;
+
+	rtMem = szMemory % SIZE_4K;
+	if(rtMem != 0)
+		rt = 1;
+	else rt = 0;
+
+	for (i = 0; i < szPageDir * 1024 + rtPTE + rt; i++)
+		*(PageTblAddr + i) = (i * SIZE_4K)|PG_P|PG_USU|PG_RWW;
+
+	_setCR3(PageDirAddr);
+	_setCR0(0x80000000);
+
+	printf("setPage successed!\n");
 }
 
 //void _out_byte(ushort port, uchar data);

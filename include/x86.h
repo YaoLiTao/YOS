@@ -22,5 +22,7 @@ void  _putc(int pos, int char_and_attr);		//打印一个字符 pos = (x + COLUMN
 void  _sti();
 void  _cli();
 void  _ud();									//产生一个#UD中断
+void  _setCR3(uint* addr);						//把页目录首址存进CR3
+void  _setCR0(uint attr);
 
 #endif

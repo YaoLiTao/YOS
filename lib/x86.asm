@@ -12,6 +12,8 @@ GLOBAL _putc
 GLOBAL _sti
 GLOBAL _cli
 GLOBAL _ud
+GLOBAL _setCR3
+GLOBAL _setCR0
 
 ;uchar in_byte(ushort port)
 _in_byte:
@@ -126,18 +128,8 @@ _putc:
 	 
 
 _lidt:
-	push ebp
-	mov ebp, esp
-
-	pushfd
-	
-	mov eax, [ebp + 8]
+	mov eax, [esp + 4]
 	lidt [eax]
-
-	popfd
-
-	mov esp, ebp
-	pop ebp
 	ret
 
 _sti:
@@ -150,4 +142,15 @@ _cli:
 
 _ud:
 	ud2
+	ret
+
+_setCR3:
+	mov eax, [esp + 4]
+	mov cr3, eax
+	ret
+
+_setCR0:
+	mov eax, cr0
+	or  eax, dword [esp + 4]
+	mov cr0, eax
 	ret
