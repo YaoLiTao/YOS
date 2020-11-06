@@ -3,6 +3,7 @@
 
 #include <type.h>
 #include <protect.h>
+#include <string.h>
 
 #endif
 
