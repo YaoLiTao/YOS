@@ -7,7 +7,7 @@
 #define STACK_SIZE                      0x4000 //16K 栈
 
 #endif
-
+.code32
 .text
         .globl  start, _start
  

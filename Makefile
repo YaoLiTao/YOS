@@ -4,12 +4,12 @@
 
 # Programs, flags, etc.
 ASM		= nasm
-CC		= gcc
+CC		= clang
 LD		= ld
 ASMFLAGS	= -f elf
 INCLUDE 	= -I include/
-CFLAGS		= -c -fno-builtin
-LDFLAGS		= -s
+CFLAGS		= -m32 -fno-builtin -c
+LDFLAGS		= -s -m elf_i386
 LDTTEXT 	= -Ttext
 
 # Some macro
@@ -21,12 +21,12 @@ KERNEL_OBJS	= kernel/kernel.o boot/boot.o lib/x86.o \
 			  lib/string.o kernel/interrupt.o kernel/protect.o
 
 # All Phony Targets
-.PHONY : everything final image clean realclean disasm all buildimg
+.PHONY : everything final clean realclean all
 
 # Default starting position
 everything : $(KERNEL)
 
-all : realclean everything cp
+all : realclean everything
 
 final : all clean
 

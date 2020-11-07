@@ -1,9 +1,9 @@
 #ifndef _YOS_PROTECT_
 #define _YOS_PROTECT_ 1
 
-#include <type.h>
-#include <protect.h>
-#include <string.h>
+#include "type.h"
+#include "protect.h"
+#include "string.h"
 
 #endif
 

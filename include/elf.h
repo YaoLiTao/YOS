@@ -6,35 +6,35 @@
 #define ELF_MAGIC 0x464C457FU  // "\x7FELF" in little endian
 
 // File header
-typedef struct{
-  uint magic;  // must equal ELF_MAGIC
-  uchar elf[12];
-  ushort type;
-  ushort machine;
-  uint version;
-  uint entry;
-  uint phoff;
-  uint shoff;
-  uint flags;
-  ushort ehsize;
-  ushort phentsize;
-  ushort phnum;
-  ushort shentsize;         
-  ushort shnum;
-  ushort shstrndx;
-}elfhdr;
+typedef struct {
+    uint magic;  // must equal ELF_MAGIC
+    uchar elf[12];
+    ushort type;
+    ushort machine;
+    uint version;
+    uint entry;
+    uint phoff;
+    uint shoff;
+    uint flags;
+    ushort ehsize;
+    ushort phentsize;
+    ushort phnum;
+    ushort shentsize;
+    ushort shnum;
+    ushort shstrndx;
+} elfhdr;
 
 // Program section header
-typedef struct{
-  uint type;
-  uint off;
-  uint vaddr;
-  uint paddr;
-  uint filesz;
-  uint memsz;
-  uint flags;
-  uint align;
-}proghdr;
+typedef struct {
+    uint type;
+    uint off;
+    uint vaddr;
+    uint paddr;
+    uint filesz;
+    uint memsz;
+    uint flags;
+    uint align;
+} proghdr;
 
 // Values for Proghdr type
 #define ELF_PROG_LOAD           1

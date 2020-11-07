@@ -6,7 +6,8 @@
 #define LINES                   24
 #define ATTRIBUTE               7
 
-void printf (const char *format, ...);
+void printf(const char *format, ...);
+
 void cls();
 
 #endif
